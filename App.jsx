@@ -1,35 +1,72 @@
-import React from 'react';
-import {
-  SafeAreaView,
-  StatusBar,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import * as React from 'react';
+import {NavigationContainer, useNavigation} from '@react-navigation/native';
+import {createDrawerNavigator} from '@react-navigation/drawer';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {Text, View, Button} from 'react-native';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 
-import {Colors} from 'react-native/Libraries/NewAppScreen';
-import {Container} from './src/components';
-
-function App() {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
+function HomeScreen({navigation}) {
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
+    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <Text>Home Screen</Text>
+      <Button
+        title="Open Drawer"
+        onPress={() => navigation.openDrawer()} // Opens the drawer
       />
-      <View style={{height: '100%'}}>
-        <Container>
-          <Text>Heelo world</Text>
-        </Container>
-      </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
-export default App;
+function SettingsScreen() {
+  return (
+    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <Text>Settings Screen</Text>
+    </View>
+  );
+}
+
+function ProfileScreen() {
+  return (
+    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <Text>Profile Screen</Text>
+    </View>
+  );
+}
+
+const Tab = createBottomTabNavigator();
+
+function HomeTabNavigator() {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Settings" component={SettingsScreen} />
+    </Tab.Navigator>
+  );
+}
+
+const Drawer = createDrawerNavigator();
+
+function DrawerNavigator() {
+  return (
+    <Drawer.Navigator
+      initialRouteName="HomeTabs"
+      screenOptions={{
+        headerShown: false,
+        swipeEnabled: false,
+      }}>
+      <Drawer.Screen name="HomeTabs" component={HomeTabNavigator} />
+      <Drawer.Screen name="Profile" component={ProfileScreen} />
+    </Drawer.Navigator>
+  );
+}
+
+// App Component
+export default function App() {
+  return (
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <DrawerNavigator />
+      </NavigationContainer>
+    </SafeAreaProvider>
+  );
+}
